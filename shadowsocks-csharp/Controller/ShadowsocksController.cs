@@ -533,7 +533,8 @@ namespace Shadowsocks.Controller
                 {
                     strategy.ReloadServers();
                 }
-
+                
+                StartPlugins();
                 privoxyRunner.Start(_config);
 
                 TCPRelay tcpRelay = new TCPRelay(this, _config);
@@ -571,6 +572,15 @@ namespace Shadowsocks.Controller
             Utils.ReleaseMemory(true);
         }
 
+        private void StartPlugins()
+        {
+             foreach (var server in _config.configs)
+            {
+                // Early start plugin processes
+                GetPluginLocalEndPointIfConfigured(server);
+            }
+        }
+        
         protected void SaveConfig(Configuration newConfig)
         {
             Configuration.Save(newConfig);
